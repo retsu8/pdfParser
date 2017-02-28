@@ -9,7 +9,7 @@ $sidius = []
 $time = Time.new
 $list = ARGV[0]
 
-$list = $list.split(",").strip
+$list = $list.split(",")
 puts $list
 
 def deathstar
@@ -138,7 +138,7 @@ def deathstar
   $sidius.insert(location, record)
 end
 
-File.foreach(__dir__+'/letter.html.haml').each do |line|
+File.foreach(__dir__+'/discover.haml').each do |line|
   $sidius.push line
 end
 
