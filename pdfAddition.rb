@@ -3,13 +3,13 @@
 require 'haml'
 require 'money'
 require 'pp'
-require 'wicked_pdf'
+#require 'wicked_pdf'
 
 $sidius = []
 $time = Time.new
 $list = ARGV[0]
 
-$list = $list.split(",")
+$list = $list.split(",").strip
 puts $list
 
 def deathstar
@@ -43,8 +43,8 @@ def deathstar
   people = $sidius[location]
   $sidius.delete_at(location)
   $list[2] = Money.new($list[2], 'USD')
-  people = people[0..-6]
-  people << ".ft2" <<" $" << $list[2].to_s << "\n"
+  people = people[0..-9]
+  people << ".p16.ft2" <<" $" << $list[2].to_s << "\n"
   $sidius.insert(location, people)
 
   #give totalamount to darth maul for insidius sceme
@@ -138,7 +138,7 @@ def deathstar
   $sidius.insert(location, record)
 end
 
-File.foreach('letter.html.haml').each do |line|
+File.foreach(__dir__+'/letter.html.haml').each do |line|
   $sidius.push line
 end
 
