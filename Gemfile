@@ -1,6 +1,5 @@
 source 'https://rubygems.org'
 gem 'money'
-gem 'pp'
 gem 'fuzzy_match'
 gem 'prawn'
 gem 'pdftk'
