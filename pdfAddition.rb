@@ -9,7 +9,8 @@ require 'combine_pdf'
 $creditcards =['discover','amex','mastercard','visa']
 Money.use_i18n = false
 $time = Time.new
-$list = ARGV[0]
+$mid = ARGV[0]
+$list = ARGV[1]
 
 $list = $list.split(',')
 puts $list
@@ -72,7 +73,7 @@ def merge(type)
   stamp = CombinePDF.load($prawnmask).pages[0]
   pdf = CombinePDF.load(type) # one way to combine, very fast.
   pdf.pages.each {|page| page << stamp}
-  pdf.save type+"combined.pdf"
+  pdf.save $mid+type+"combined.pdf"
 end
 matcher = FuzzyMatch.new($creditcards)
 matched = matcher.find($list[0])
