@@ -5,6 +5,7 @@ require 'fuzzy_match'
 require 'prawn'
 require 'pdftk'
 require 'combine_pdf'
+require 'fileutils'
 
 $creditcards =['discover','amex','mastercard','visa']
 Money.use_i18n = false
@@ -13,7 +14,6 @@ $mid = ARGV[0]
 $list = ARGV[1]
 
 $list = $list.split(',')
-puts $list
 
 $discover = "discover.pdf"
 $amex = "Amex.pdf"
@@ -73,7 +73,8 @@ def merge(type)
   stamp = CombinePDF.load($prawnmask).pages[0]
   pdf = CombinePDF.load(type) # one way to combine, very fast.
   pdf.pages.each {|page| page << stamp}
-  pdf.save $mid+type+"combined.pdf"
+  FileUtils::mkdir_p "chargebackPDF"+$mid
+  pdf.save "chargebackPDF"+"/"+$mid+"/"+type+$ref+$cardnumber+$transamount+".pdf"
 end
 matcher = FuzzyMatch.new($creditcards)
 matched = matcher.find($list[0])
