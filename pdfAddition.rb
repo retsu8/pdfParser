@@ -72,7 +72,7 @@ def merge(type)
   stamp = CombinePDF.load($prawnmask).pages[0]
   pdf = CombinePDF.load(type) # one way to combine, very fast.
   pdf.pages.each {|page| page << stamp}
-  pdf.save "combined.pdf"
+  pdf.save type+"combined.pdf"
 end
 matcher = FuzzyMatch.new($creditcards)
 matched = matcher.find($list[0])
