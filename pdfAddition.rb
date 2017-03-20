@@ -39,7 +39,7 @@ def buildUsecase
   $reasoncode = $list[9]
   $message = $list[10]
   $addcomments = $list[11]
-  $dcharg =  DateTime.parse($list[12])
+  $dcharg =  DateTime.strptime($list[12], '%Y-%d-%m')
   $transDate = $dcharg.strftime("%d-%m-%Y")
   $cardnumber = $list[13]
   $transamount = "$"+ Money.new($list[14], 'USD').to_s
@@ -86,6 +86,7 @@ def merge(type)
   pdf = CombinePDF.load(type) # one way to combine, very fast.
   pdf.pages.each {|page| page << stamp}
   $month = Date::MONTHNAMES[$dcharg.month]
+  puts $dcharg.month
   FileUtils::mkdir_p "chargebackPDF/"+$mid+"/"+$dcharg.year.to_s+"/"+$month.to_s
   pdf.save "chargebackPDF/"+$mid+"/"+$dcharg.year.to_s+"/"+$month.to_s+"/card"+$cardnumber+"reference"+$ref+".pdf"
 end
