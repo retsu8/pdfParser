@@ -35,18 +35,19 @@ def buildUsecase
   $state = $list[5]
   $zip = $list[6]
   $chargeamount = "$"+ Money.new($list[7], 'USD').to_s
-  $totalamount = "$"+ Money.new($list[8], 'USD').to_s
-  $reasoncode = $list[9]
-  $message = $list[10]
-  $addcomments = $list[11]
-  $dcharg =  DateTime.strptime($list[12], '%Y-%d-%m')
+  $totalamount = "$"+ Money.new($list[7], 'USD').to_s
+  $reasoncode = $list[8]
+  $message = $list[9]
+  $addcomments = $list[10]
+  $dcharg =  DateTime.strptime($list[11], '%Y-%d-%m')
   $transDate = $dcharg.strftime("%d-%m-%Y")
-  $cardnumber = $list[13]
-  $transamount = "$"+ Money.new($list[14], 'USD').to_s
-  $ref = $list[15]
-  $pos = $list[16]
-  $trancode = $list[17]
-  $reccode = $list[18]
+  $cardnumber = $list[12]
+  $transamount = "$"+ Money.new($list[13], 'USD').to_s
+  $ref = $list[14]
+  $pos = $list[15]
+  $trancode = $list[16]
+  $reccode = $list[17]
+  $month = Date::MONTHNAMES[$dcharg.month]
 end
 def prawnbuild
   Prawn::Document.generate($prawnmask, :page_size => "LETTER", :page_layout => :portrait) do
@@ -85,8 +86,6 @@ def merge(type)
   stamp = CombinePDF.load($prawnmask).pages[0]
   pdf = CombinePDF.load(type) # one way to combine, very fast.
   pdf.pages.each {|page| page << stamp}
-  $month = Date::MONTHNAMES[$dcharg.month]
-  puts $dcharg.month
   FileUtils::mkdir_p "chargebackPDF/"+$mid+"/"+$dcharg.year.to_s+"/"+$month.to_s
   pdf.save "chargebackPDF/"+$mid+"/"+$dcharg.year.to_s+"/"+$month.to_s+"/card"+$cardnumber+"reference"+$ref+".pdf"
 end
@@ -96,20 +95,28 @@ matched = matcher.find($list[0])
 case matched
 when 'discover'
   buildUsecase
-  prawnbuild
-  merge($discover)
+  if a.try(File.file?("chargebackPDF/"+$mid+"/"+$dcharg.year.to_s+"/"+$month.to_s+"/card"+$cardnumber+"reference"+$ref+".pdf")) == false
+    prawnbuild
+    merge($discover)
+  end
 when 'amex'
   buildUsecase
-  prawnbuild
-  merge($amex)
+  if a.try(File.file?("chargebackPDF/"+$mid+"/"+$dcharg.year.to_s+"/"+$month.to_s+"/card"+$cardnumber+"reference"+$ref+".pdf")) == false
+    prawnbuild
+    merge($amex)
+  end
 when 'mastercard'
   buildUsecase
-  prawnbuild
-  merge($mcvisa)
+  if a.try(File.file?("chargebackPDF/"+$mid+"/"+$dcharg.year.to_s+"/"+$month.to_s+"/card"+$cardnumber+"reference"+$ref+".pdf")) == false
+    prawnbuild
+    merge($mcvisa)
+  end
 when 'visa'
   buildUsecase
-  prawnbuild
-  merge($mcvisa)
+  if a.try(File.file?("chargebackPDF/"+$mid+"/"+$dcharg.year.to_s+"/"+$month.to_s+"/card"+$cardnumber+"reference"+$ref+".pdf")) == false
+    prawnbuild
+    merge($mcvisa)
+  end
 else
   puts "no reconized input in first slot"
 end
